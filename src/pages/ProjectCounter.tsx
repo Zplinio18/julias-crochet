@@ -2,7 +2,7 @@ import { useParams, Navigate } from "react-router-dom";
 import { RefreshCcw, Plus, Minus } from "lucide-react";
 import { Container } from "../components/base/Container";
 import { Text } from "../components/base/Text";
-import { CloudBackground } from "../components/templates/CloudBackground";
+// Removi o import do CloudBackground daqui
 import type { Project } from "../hooks/useProjectStore";
 import signCatImg from "../assets/images/4.png";
 import signCatStitchesImg from "../assets/images/5.png";
@@ -24,9 +24,10 @@ export function ProjectCounter({
   if (!project) return <Navigate to="/" />;
 
   return (
-    <Container.Flex className="relative min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-pink-50 p-4">
-      {/* Componente de Fundo com Nuvens */}
-      <CloudBackground />
+    // Removi 'min-h-screen' e 'bg-pink-50'.
+    // Agora ele usa o tamanho e o fundo definidos no layout principal (App.tsx)
+    <Container.Flex className="relative w-full flex-col items-center justify-center overflow-hidden p-4">
+      {/* CloudBackground REMOVIDO DAQUI (já está no App.tsx) */}
 
       <div className="z-10 flex w-full max-w-4xl flex-col items-center gap-8">
         {/* Header do Projeto */}
@@ -73,7 +74,7 @@ export function ProjectCounter({
   );
 }
 
-// O componente CounterCard continua igual (não precisa alterar)
+// O componente CounterCard continua igual
 function CounterCard({
   title,
   count,
