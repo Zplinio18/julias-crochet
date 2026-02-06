@@ -12,14 +12,21 @@ import { Dialog } from "../Dialog";
 interface SidebarProps {
   projects: Project[];
   // Atualizei aqui: Agora esperamos que a função retorne uma string (o ID do projeto)
-  onAddProject: (name: string, emoji: string) => string; 
+  onAddProject: (name: string, emoji: string) => string;
   onDeleteProject: (id: string) => void;
 }
 
-export function SidebarRoot({ projects, onAddProject, onDeleteProject }: SidebarProps) {
+export function SidebarRoot({
+  projects,
+  onAddProject,
+  onDeleteProject,
+}: SidebarProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [projectToDelete, setProjectToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [projectToDelete, setProjectToDelete] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -27,10 +34,10 @@ export function SidebarRoot({ projects, onAddProject, onDeleteProject }: Sidebar
   const handleCreateSubmit = (name: string, emoji: string) => {
     // 1. Cria o projeto e captura o ID retornado
     const newProjectId = onAddProject(name, emoji);
-    
+
     // 2. Fecha a sidebar (no mobile)
     setIsSidebarOpen(false);
-    
+
     // 3. Redireciona imediatamente para a página do novo projeto
     navigate(`/project/${newProjectId}`);
   };
@@ -54,67 +61,68 @@ export function SidebarRoot({ projects, onAddProject, onDeleteProject }: Sidebar
   return (
     <>
       {/* Botão Mobile */}
-      <button 
+      <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="fixed top-4 left-4 z-50 p-2 bg-white rounded-full shadow-md text-pink-500 md:hidden"
+        className="fixed left-4 top-4 z-50 rounded-full bg-white p-2 text-pink-500 shadow-md md:hidden"
       >
         {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
       {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/20 z-30 md:hidden"
+        <div
+          className="fixed inset-0 z-30 bg-black/20 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <Container.Flex 
-        className={`fixed inset-y-0 left-0 z-40 w-72 flex-col bg-white border-r border-pink-100 transform transition-transform duration-300 md:translate-x-0 ${
+      <Container.Flex
+        className={`fixed inset-y-0 left-0 z-40 w-72 transform flex-col border-r border-pink-100 bg-white transition-transform duration-300 md:translate-x-0 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="p-6 flex flex-col h-full">
-          <Text.Title className="text-3xl text-pink-500 mb-8 text-center font-dyna">
-             Júlia's Crochet
+        <div className="flex h-full flex-col p-6">
+          <Text.Title className="mb-8 text-center font-dyna text-3xl text-pink-500">
+            Julia's Crochet
           </Text.Title>
 
-          <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+          <div className="custom-scrollbar flex-1 space-y-2 overflow-y-auto pr-2">
             {projects.map((project) => (
               <Link
                 key={project.id}
                 to={`/project/${project.id}`}
                 onClick={() => setIsSidebarOpen(false)}
-                className={`group relative flex items-center justify-between p-3 rounded-xl transition-all border border-transparent ${
+                className={`group relative flex items-center justify-between rounded-xl border border-transparent p-3 transition-all ${
                   location.pathname === `/project/${project.id}`
-                    ? "bg-pink-100 text-pink-600 font-bold border-pink-200"
-                    : "hover:bg-pink-50 text-gray-600 hover:border-pink-100"
+                    ? "border-pink-200 bg-pink-100 font-bold text-pink-600"
+                    : "text-gray-600 hover:border-pink-100 hover:bg-pink-50"
                 }`}
               >
-                <span className="truncate flex gap-3 items-center">
+                <span className="flex items-center gap-3 truncate">
                   <span className="text-xl">{project.emoji}</span>
                   <span className="truncate">{project.name}</span>
                 </span>
-                
-                <button 
+
+                <button
                   onClick={(e) => requestDelete(e, project)}
-                  className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100"
+                  className="rounded-lg p-2 text-gray-400 opacity-100 transition-all hover:bg-red-50 hover:text-red-500 focus:opacity-100 md:opacity-0 md:group-hover:opacity-100"
                   title="Apagar projeto"
                 >
                   <Trash2 size={18} />
                 </button>
               </Link>
             ))}
-            
+
             {projects.length === 0 && (
               <div className="flex flex-col items-center justify-center py-10 opacity-70">
-                <img 
-                  src={emptySidebarImg} 
-                  alt="Sem projetos" 
-                  className="w-32 h-32 object-contain mb-2 opacity-80" 
+                <img
+                  src={emptySidebarImg}
+                  alt="Sem projetos"
+                  className="mb-2 h-32 w-32 object-contain opacity-80"
                 />
-                <Text.Defaut className="text-sm text-gray-400 text-center px-4">
-                  Ainda não tens projetos...<br/>A gatinha está à espera!
+                <Text.Defaut className="px-4 text-center text-sm text-gray-400">
+                  Ainda não tem um projeto...
+                  <br />A Maia ta esperando
                 </Text.Defaut>
               </div>
             )}
@@ -122,17 +130,17 @@ export function SidebarRoot({ projects, onAddProject, onDeleteProject }: Sidebar
 
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="mt-4 flex items-center justify-center gap-2 w-full p-4 bg-pink-500 text-white rounded-2xl font-bold hover:bg-pink-600 transition-colors shadow-lg shadow-pink-200 active:scale-95"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-pink-500 p-4 font-bold text-white shadow-lg shadow-pink-200 transition-colors hover:bg-pink-600 active:scale-95"
           >
             <Plus size={20} /> Novo Projeto
           </button>
         </div>
       </Container.Flex>
 
-      <Dialog.CreateProject 
-        isOpen={isCreateModalOpen} 
-        onClose={() => setIsCreateModalOpen(false)} 
-        onSubmit={handleCreateSubmit} 
+      <Dialog.CreateProject
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreateSubmit}
       />
 
       <Dialog.DeleteProject
