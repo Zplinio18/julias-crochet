@@ -21,13 +21,8 @@ function App() {
           onDeleteProject={deleteProject}
         />
 
-        {/* Área principal Wrapper */}
         <div className="relative flex flex-1 flex-col overflow-hidden md:ml-72 md:min-h-screen">
-          {/* ✅ MOVE O BACKGROUND PARA CÁ */}
-          {/* Isso garante que ele cubra 100% da altura desse container, fundo do footer incluso */}
           <CloudBackground />
-
-          {/* Adicione 'relative z-10' para o conteúdo ficar ACIMA das nuvens */}
           <main className="relative z-10 flex flex-1 flex-col">
             <Routes>
               <Route path="/" element={<WelcomeScreen />} />
@@ -45,7 +40,7 @@ function App() {
           </main>
 
           {/* Rodapé também precisa de z-10 para ficar clicável e visível sobre as nuvens */}
-          <footer className="relative z-10 w-full py-6 text-center md:-mt-28">
+          <footer className="relative z-10 w-full py-6 text-center">
             <span className="font-medium tracking-widest text-pink-300 opacity-80 transition-opacity hover:opacity-100">
               made by zplinio
             </span>
