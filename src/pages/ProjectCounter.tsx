@@ -2,7 +2,6 @@ import { useParams, Navigate } from "react-router-dom";
 import { RefreshCcw, Plus, Minus } from "lucide-react";
 import { Container } from "../components/base/Container";
 import { Text } from "../components/base/Text";
-// Removi o import do CloudBackground daqui
 import type { Project } from "../hooks/useProjectStore";
 import signCatImg from "../assets/images/4.png";
 import signCatStitchesImg from "../assets/images/5.png";
@@ -24,13 +23,8 @@ export function ProjectCounter({
   if (!project) return <Navigate to="/" />;
 
   return (
-    // Removi 'min-h-screen' e 'bg-pink-50'.
-    // Agora ele usa o tamanho e o fundo definidos no layout principal (App.tsx)
     <Container.Flex className="relative w-full flex-col items-center justify-center overflow-hidden p-4">
-      {/* CloudBackground REMOVIDO DAQUI (já está no App.tsx) */}
-
       <div className="z-10 flex w-full max-w-4xl flex-col items-center gap-8">
-        {/* Header do Projeto */}
         <div className="relative w-full max-w-2xl overflow-hidden rounded-[2rem] bg-[#3B3294] p-8 text-center text-white shadow-xl">
           <div className="absolute bottom-0 left-0 h-4 w-full translate-y-2 rounded-t-full bg-white/10"></div>
           <div className="flex flex-col items-center gap-2">
@@ -47,7 +41,6 @@ export function ProjectCounter({
           Row Counter
         </Text.Title>
 
-        {/* Grid de Contadores */}
         <Container.SimpleGrid className="w-full max-w-3xl grid-cols-1 gap-8 md:grid-cols-2">
           <CounterCard
             title="Rows"
@@ -74,7 +67,6 @@ export function ProjectCounter({
   );
 }
 
-// O componente CounterCard continua igual
 function CounterCard({
   title,
   count,

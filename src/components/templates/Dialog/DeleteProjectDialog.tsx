@@ -20,8 +20,6 @@ export function DeleteProjectDialog({ isOpen, projectName, onClose, onConfirm }:
       
       <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl relative z-10 animate-in fade-in zoom-in duration-200 border-b-4 border-red-100">
         <div className="flex flex-col items-center text-center gap-4">
-          
-          {/* Imagem da gatinha no lixo */}
           <div className="relative">
             <div className="absolute inset-0 bg-red-100 blur-2xl opacity-50 rounded-full"></div>
             <img 

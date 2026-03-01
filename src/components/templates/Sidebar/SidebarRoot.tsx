@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Plus, Trash2, Menu, X, Pencil } from "lucide-react";
 
-// Import da imagem vazia
 import emptySidebarImg from "../../../assets/images/2.png";
 import type { Project } from "../../../hooks/useProjectStore";
 import { Container } from "../../base/Container";
@@ -11,7 +10,6 @@ import { Dialog } from "../Dialog";
 
 interface SidebarProps {
   projects: Project[];
-  // Atualizei aqui: Agora esperamos que a função retorne uma string (o ID do projeto)
   onAddProject: (name: string, emoji: string) => string;
   onDeleteProject: (id: string) => void;
   onEditProject: (id: string, name: string, emoji: string) => void;
@@ -35,13 +33,10 @@ export function SidebarRoot({
   const navigate = useNavigate();
 
   const handleCreateSubmit = (name: string, emoji: string) => {
-    // 1. Cria o projeto e captura o ID retornado
     const newProjectId = onAddProject(name, emoji);
 
-    // 2. Fecha a sidebar (no mobile)
     setIsSidebarOpen(false);
 
-    // 3. Redireciona imediatamente para a página do novo projeto
     navigate(`/project/${newProjectId}`);
   };
 
@@ -76,7 +71,6 @@ export function SidebarRoot({
 
   return (
     <>
-      {/* Botão Mobile */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         className="fixed left-4 top-4 z-50 rounded-full bg-white p-2 text-pink-500 shadow-md md:hidden"
@@ -91,7 +85,6 @@ export function SidebarRoot({
         />
       )}
 
-      {/* Sidebar */}
       <Container.Flex
         className={`fixed inset-y-0 left-0 z-40 w-72 transform flex-col border-r border-pink-100 bg-white transition-transform duration-300 md:translate-x-0 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"

@@ -5,7 +5,6 @@ export function LoadingOverlay() {
   return (
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-pink-50/90 backdrop-blur-md">
       <div className="animate-in fade-in relative flex flex-col items-center gap-6 duration-500">
-        {/* Animação de pulsação e flutuação para a imagem */}
         <div className="relative">
           <div className="absolute inset-0 animate-pulse rounded-full bg-pink-200 opacity-40 blur-3xl" />
           <img
@@ -23,8 +22,6 @@ export function LoadingOverlay() {
             Sincronizando com a nuvem ✨
           </Text.Defaut>
         </div>
-
-        {/* Barra de progresso visual */}
         <div className="h-1 w-48 overflow-hidden rounded-full bg-pink-100">
           <div className="h-full animate-[progress_2s_ease-in-out_infinite] bg-pink-400" />
         </div>

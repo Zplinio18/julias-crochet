@@ -18,7 +18,6 @@ export function useProjectStore() {
     return saved ? JSON.parse(saved) : [];
   });
 
-  // 1. Carregamento Inicial (Cloud -> Local)
   useEffect(() => {
     const fetchFromCloud = async () => {
       try {
@@ -39,15 +38,12 @@ export function useProjectStore() {
     fetchFromCloud();
   }, []);
 
-  // 2. Função de Sincronização (Local -> Cloud)
   const syncToCloud = useCallback(async (currentProjects: Project[]) => {
     setIsSyncing(true);
     try {
-      // Usamos 'no-cors' se houver problemas de redirecionamento do Google,
-      // mas o padrão 'cors' costuma funcionar para App Script com Anyone.
       await fetch(SCRIPT_URL, {
         method: "POST",
-        mode: "no-cors", // Necessário para evitar erros de CORS com o redirecionamento do Google
+        mode: "no-cors",
         headers: {
           "Content-Type": "application/json",
         },
@@ -63,7 +59,6 @@ export function useProjectStore() {
     }
   }, []);
 
-  // 3. Atualiza LocalStorage sempre que mudar
   useEffect(() => {
     localStorage.setItem("crochet-projects", JSON.stringify(projects));
   }, [projects]);

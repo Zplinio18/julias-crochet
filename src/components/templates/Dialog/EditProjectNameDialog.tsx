@@ -74,7 +74,6 @@ export function EditProjectNameDialog({
   const [name, setName] = useState(initialName);
   const [emoji, setEmoji] = useState(initialEmoji);
 
-  // Update internal state when props change
   useEffect(() => {
     if (isOpen) {
       setName(initialName);

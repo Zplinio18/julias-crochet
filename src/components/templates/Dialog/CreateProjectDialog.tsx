@@ -58,7 +58,6 @@ export function CreateProjectDialog({ isOpen, onClose, onSubmit }: CreateProject
           <div>
             <label className="block text-sm font-bold text-gray-400 mb-2 ml-1">ÍCONE</label>
             
-            {/* Adicionei max-h-60 e overflow para criar a rolagem */}
             <div className="max-h-60 overflow-y-auto pr-2 custom-scrollbar">
               <div className="grid grid-cols-5 gap-2 p-4">
                 {EMOJI_LIST.map((e) => (
