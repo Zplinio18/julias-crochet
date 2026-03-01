@@ -7,18 +7,29 @@ import { CloudBackground } from "./components/templates/CloudBackground";
 import welcomeImg from "./assets/images/3.png"; // Verifique se o caminho está correto
 import { Sidebar } from "./components/templates/Sidebar";
 import { Text } from "./components/base/Text";
+import { Dialog } from "./components/templates/Dialog";
 
 function App() {
-  const { projects, addProject, updateCount, resetCount, deleteProject } =
-    useProjectStore();
+  const {
+    projects,
+    addProject,
+    updateCount,
+    resetCount,
+    deleteProject,
+    editProject,
+    isLoading,
+    isSyncing,
+  } = useProjectStore();
 
   return (
     <BrowserRouter>
+      {isLoading && <Dialog.Loading />}
       <Container.Flex className="w-full bg-pink-50 font-exo2 md:min-h-screen">
         <Sidebar.Root
           projects={projects}
           onAddProject={addProject}
           onDeleteProject={deleteProject}
+          onEditProject={editProject}
         />
 
         <div className="relative flex flex-1 flex-col overflow-hidden md:ml-72 md:min-h-screen">
@@ -45,14 +56,27 @@ function App() {
               made by zplinio
             </span>
           </footer>
+
+          {/* Indicador de Sincronização Flutuante */}
+          {isSyncing && (
+            <div className="animate-in fade-in slide-in-from-right-4 fixed bottom-6 right-6 z-[100] duration-500">
+              <div className="flex items-center gap-2 rounded-full border border-pink-100 bg-white/60 px-4 py-2 shadow-lg backdrop-blur-md">
+                <div className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-pink-400 opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-pink-500"></span>
+                </div>
+                <span className="text-[11px] font-bold tracking-tight text-pink-600">
+                  SINCRONIZANDO
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       </Container.Flex>
     </BrowserRouter>
   );
 }
 
-// 2. Limpeza no WelcomeScreen:
-// Removemos o CloudBackground daqui, pois ele já está no App (global)
 function WelcomeScreen() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center p-8 text-center text-pink-400">

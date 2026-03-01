@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Plus, Trash2, Menu, X } from "lucide-react";
+import { Plus, Trash2, Menu, X, Pencil } from "lucide-react";
 
 // Import da imagem vazia
 import emptySidebarImg from "../../../assets/images/2.png";
@@ -14,12 +14,14 @@ interface SidebarProps {
   // Atualizei aqui: Agora esperamos que a função retorne uma string (o ID do projeto)
   onAddProject: (name: string, emoji: string) => string;
   onDeleteProject: (id: string) => void;
+  onEditProject: (id: string, name: string, emoji: string) => void;
 }
 
 export function SidebarRoot({
   projects,
   onAddProject,
   onDeleteProject,
+  onEditProject,
 }: SidebarProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -27,6 +29,7 @@ export function SidebarRoot({
     id: string;
     name: string;
   } | null>(null);
+  const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -42,10 +45,23 @@ export function SidebarRoot({
     navigate(`/project/${newProjectId}`);
   };
 
+  const handleEditSubmit = (name: string, emoji: string) => {
+    if (projectToEdit) {
+      onEditProject(projectToEdit.id, name, emoji);
+      setProjectToEdit(null);
+    }
+  };
+
   const requestDelete = (e: React.MouseEvent, project: Project) => {
     e.stopPropagation();
     e.preventDefault();
     setProjectToDelete({ id: project.id, name: project.name });
+  };
+
+  const requestEdit = (e: React.MouseEvent, project: Project) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setProjectToEdit(project);
   };
 
   const handleConfirmDelete = () => {
@@ -103,13 +119,22 @@ export function SidebarRoot({
                   <span className="truncate">{project.name}</span>
                 </span>
 
-                <button
-                  onClick={(e) => requestDelete(e, project)}
-                  className="rounded-lg p-2 text-gray-400 opacity-100 transition-all hover:bg-red-50 hover:text-red-500 focus:opacity-100 md:opacity-0 md:group-hover:opacity-100"
-                  title="Apagar projeto"
-                >
-                  <Trash2 size={18} />
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={(e) => requestEdit(e, project)}
+                    className="rounded-lg p-2 text-gray-400 opacity-100 transition-all hover:bg-pink-50 hover:text-pink-500 focus:opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                    title="Editar projeto"
+                  >
+                    <Pencil size={18} />
+                  </button>
+                  <button
+                    onClick={(e) => requestDelete(e, project)}
+                    className="rounded-lg p-2 text-gray-400 opacity-100 transition-all hover:bg-red-50 hover:text-red-500 focus:opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                    title="Apagar projeto"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </Link>
             ))}
 
@@ -148,6 +173,14 @@ export function SidebarRoot({
         projectName={projectToDelete?.name || ""}
         onClose={() => setProjectToDelete(null)}
         onConfirm={handleConfirmDelete}
+      />
+
+      <Dialog.EditProject
+        isOpen={!!projectToEdit}
+        onClose={() => setProjectToEdit(null)}
+        onSubmit={handleEditSubmit}
+        initialName={projectToEdit?.name || ""}
+        initialEmoji={projectToEdit?.emoji || "🧶"}
       />
     </>
   );

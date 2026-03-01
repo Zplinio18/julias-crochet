@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export type Project = {
   id: string;
@@ -8,12 +8,62 @@ export type Project = {
   stitches: number;
 };
 
+const SCRIPT_URL = import.meta.env.VITE_SCRIPT_URL;
+
 export function useProjectStore() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [projects, setProjects] = useState<Project[]>(() => {
     const saved = localStorage.getItem("crochet-projects");
     return saved ? JSON.parse(saved) : [];
   });
 
+  // 1. Carregamento Inicial (Cloud -> Local)
+  useEffect(() => {
+    const fetchFromCloud = async () => {
+      try {
+        const response = await fetch(SCRIPT_URL);
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          setProjects(data);
+          localStorage.setItem("crochet-projects", JSON.stringify(data));
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados da planilha:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFromCloud();
+  }, []);
+
+  // 2. Função de Sincronização (Local -> Cloud)
+  const syncToCloud = useCallback(async (currentProjects: Project[]) => {
+    setIsSyncing(true);
+    try {
+      // Usamos 'no-cors' se houver problemas de redirecionamento do Google,
+      // mas o padrão 'cors' costuma funcionar para App Script com Anyone.
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors", // Necessário para evitar erros de CORS com o redirecionamento do Google
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "sync",
+          projects: currentProjects,
+        }),
+      });
+    } catch (error) {
+      console.error("Erro ao sincronizar com a nuvem:", error);
+    } finally {
+      setIsSyncing(false);
+    }
+  }, []);
+
+  // 3. Atualiza LocalStorage sempre que mudar
   useEffect(() => {
     localStorage.setItem("crochet-projects", JSON.stringify(projects));
   }, [projects]);
@@ -26,29 +76,56 @@ export function useProjectStore() {
       rows: 0,
       stitches: 0,
     };
-    setProjects([...projects, newProject]);
+    const updated = [...projects, newProject];
+    setProjects(updated);
+    syncToCloud(updated);
     return newProject.id;
   };
 
-  const updateCount = (id: string, type: "rows" | "stitches", delta: number) => {
-    setProjects((prev) =>
-      prev.map((p) => {
-        if (p.id !== id) return p;
-        const newValue = p[type] + delta;
-        return { ...p, [type]: newValue < 0 ? 0 : newValue };
-      })
-    );
+  const updateCount = (
+    id: string,
+    type: "rows" | "stitches",
+    delta: number,
+  ) => {
+    const updated = projects.map((p) => {
+      if (p.id !== id) return p;
+      const newValue = p[type] + delta;
+      return { ...p, [type]: newValue < 0 ? 0 : newValue };
+    });
+    setProjects(updated);
+    syncToCloud(updated);
   };
 
   const resetCount = (id: string, type: "rows" | "stitches") => {
-    setProjects((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, [type]: 0 } : p))
+    const updated = projects.map((p) =>
+      p.id === id ? { ...p, [type]: 0 } : p,
     );
+    setProjects(updated);
+    syncToCloud(updated);
   };
 
   const deleteProject = (id: string) => {
-    setProjects((prev) => prev.filter((p) => p.id !== id));
+    const updated = projects.filter((p) => p.id !== id);
+    setProjects(updated);
+    syncToCloud(updated);
   };
 
-  return { projects, addProject, updateCount, resetCount, deleteProject };
+  const editProject = (id: string, name: string, emoji: string) => {
+    const updated = projects.map((p) =>
+      p.id === id ? { ...p, name, emoji } : p,
+    );
+    setProjects(updated);
+    syncToCloud(updated);
+  };
+
+  return {
+    projects,
+    addProject,
+    updateCount,
+    resetCount,
+    deleteProject,
+    editProject,
+    isLoading,
+    isSyncing,
+  };
 }
