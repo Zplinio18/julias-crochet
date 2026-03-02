@@ -1,67 +1,15 @@
 import { useState, useEffect } from "react";
 import { Text } from "../../base/Text";
-
-const EMOJI_LIST = [
-  "🧶",
-  "🧣",
-  "🩷",
-  "🤍",
-  "🥳",
-  "🧵",
-  "🪡",
-  "👒",
-  "🧤",
-  "👗",
-  "🐶",
-  "🐱",
-  "🌷",
-  "🪷",
-  "🌸",
-  "🌺",
-  "🌻",
-  "🌼",
-  "🪻",
-  "🌹",
-  "💐",
-  "🌈",
-  "💫",
-  "⭐️",
-  "🍓",
-  "🍉",
-  "🍒",
-  "🍇",
-  "🍎",
-  "🍡",
-  "🍧",
-  "🍰",
-  "🧁",
-  "🍭",
-  "🎂",
-  "🍦",
-  "🍨",
-  "🍫",
-  "🧋",
-  "🧃",
-  "🥢",
-  "🏹",
-  "🛼",
-  "🎧",
-  "🎨",
-  "🩰",
-  "🎮",
-  "🏠",
-  "🧸",
-  "🎀",
-  "🎁",
-  "🎉",
-];
+import { EmojiPicker } from "./EmojiPicker";
 
 interface EditProjectNameDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (name: string, emoji: string) => void;
+  onSubmit: (name: string, emoji: string, hasTimer: boolean, notes: string) => void;
   initialName: string;
   initialEmoji: string;
+  initialHasTimer: boolean;
+  initialNotes: string;
 }
 
 export function EditProjectNameDialog({
@@ -70,24 +18,31 @@ export function EditProjectNameDialog({
   onSubmit,
   initialName,
   initialEmoji,
+  initialHasTimer,
+  initialNotes,
 }: EditProjectNameDialogProps) {
   const [name, setName] = useState(initialName);
   const [emoji, setEmoji] = useState(initialEmoji);
+  const [hasTimer, setHasTimer] = useState(initialHasTimer);
+  const [notes, setNotes] = useState(initialNotes || "");
 
   useEffect(() => {
-    if (isOpen) {
-      setName(initialName);
-      setEmoji(initialEmoji);
-    }
-  }, [isOpen, initialName, initialEmoji]);
+    setName(initialName);
+    setEmoji(initialEmoji);
+    setHasTimer(initialHasTimer);
+    setNotes(initialNotes || "");
+  }, [initialName, initialEmoji, initialHasTimer, initialNotes]);
+
+  if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name) return;
-
-    onSubmit(name, emoji);
-    onClose();
+    if (name.trim()) {
+      onSubmit(name, emoji, hasTimer, notes);
+      onClose();
+    }
   };
+
 
   if (!isOpen) return null;
 
@@ -98,7 +53,7 @@ export function EditProjectNameDialog({
         onClick={onClose}
       />
 
-      <div className="animate-in fade-in zoom-in relative z-10 w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl duration-200">
+      <div className="animate-in fade-in zoom-in relative z-10 w-full max-w-sm max-h-[90vh] overflow-y-auto custom-scrollbar rounded-3xl bg-white p-6 shadow-2xl duration-200">
         <div className="mb-6 flex flex-col items-center">
           <Text.Title className="text-center text-2xl text-pink-500">
             Editar Projeto
@@ -128,24 +83,39 @@ export function EditProjectNameDialog({
               ÍCONE
             </label>
 
-            <div className="custom-scrollbar max-h-60 overflow-y-auto pr-2">
-              <div className="grid grid-cols-5 gap-2 p-4">
-                {EMOJI_LIST.map((e) => (
-                  <button
-                    key={e}
-                    type="button"
-                    onClick={() => setEmoji(e)}
-                    className={`rounded-xl p-2 text-2xl transition-all ${
-                      emoji === e
-                        ? "scale-110 bg-pink-100 ring-2 ring-pink-400"
-                        : "grayscale hover:bg-gray-100 hover:grayscale-0"
-                    }`}
-                  >
-                    {e}
-                  </button>
-                ))}
-              </div>
+            <EmojiPicker selectedEmoji={emoji} onSelect={setEmoji} />
+          </div>
+
+          <div className="flex items-center justify-between rounded-2xl bg-gray-50 p-4 transition-all hover:bg-gray-100">
+            <div className="flex flex-col">
+              <span className="text-sm font-bold text-gray-700">Cronômetro de Sessão</span>
+              <span className="text-xs text-gray-400">Ver quanto tempo levou cada projeto</span>
             </div>
+            <button
+              type="button"
+              onClick={() => setHasTimer(!hasTimer)}
+              className={`relative h-6 w-11 rounded-full transition-colors ${
+                hasTimer ? "bg-pink-500" : "bg-gray-300"
+              }`}
+            >
+              <div
+                className={`absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-transform ${
+                  hasTimer ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </button>
+          </div>
+
+          <div>
+            <label className="mb-2 ml-1 block text-sm font-bold text-gray-400 uppercase">
+              Notas (Opcional)
+            </label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Cole o link do YouTube ou anote detalhes do tutorial..."
+              className="w-full min-h-[100px] rounded-2xl border-2 border-transparent bg-gray-50 p-4 text-sm font-medium text-gray-700 transition-all focus:border-pink-300 focus:outline-none resize-none"
+            />
           </div>
 
           <div className="flex gap-3 pt-2">

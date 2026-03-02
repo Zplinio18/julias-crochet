@@ -17,6 +17,8 @@ function App() {
     resetCount,
     deleteProject,
     editProject,
+    updateProjectTime,
+    updateNotes,
     isLoading,
     isSyncing,
   } = useProjectStore();
@@ -29,7 +31,7 @@ function App() {
           projects={projects}
           onAddProject={addProject}
           onDeleteProject={deleteProject}
-          onEditProject={editProject}
+          onEditProject={(id, name, emoji, hasTimer, notes) => editProject(id, name, emoji, hasTimer, notes)}
         />
 
         <div className="relative flex flex-1 flex-col overflow-hidden md:ml-72 md:min-h-screen">
@@ -44,6 +46,8 @@ function App() {
                     projects={projects}
                     updateCount={updateCount}
                     resetCount={resetCount}
+                    updateProjectTime={updateProjectTime}
+                    updateNotes={updateNotes}
                   />
                 }
               />

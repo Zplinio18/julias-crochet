@@ -15,8 +15,6 @@ export function CloudBackground() {
       `}</style>
 
       <div className="pointer-events-none absolute inset-0 z-0 h-full w-full overflow-hidden">
-        {/* --- CAMADA 1: Nuvens Grandes e Lentas (Fundo - Opacidade Baixa) --- */}
-        {/* Topo */}
         <div
           className="animate-cloud absolute text-pink-100 opacity-60"
           style={{ top: "5%", animationDuration: "85s", animationDelay: "-5s" }}
@@ -55,8 +53,6 @@ export function CloudBackground() {
         >
           <Cloud size={250} fill="currentColor" strokeWidth={0} />
         </div>
-
-        {/* --- CAMADA 2: Nuvens Médias (Meio - Opacidade Média) --- */}
         <div
           className="animate-cloud absolute text-pink-200 opacity-40"
           style={{
@@ -87,8 +83,6 @@ export function CloudBackground() {
         >
           <Cloud size={160} fill="currentColor" strokeWidth={0} />
         </div>
-
-        {/* --- CAMADA 3: Nuvens Pequenas e Rápidas (Frente - Mais Brancas) --- */}
         <div
           className="animate-cloud absolute text-white opacity-50"
           style={{

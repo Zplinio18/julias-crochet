@@ -29,6 +29,17 @@
     scrollbar-color: rgba(255,255,255,0.6) transparent;
   }
 
+  /* Custom Scrollbar for Dialogs - Hidden but functional */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* Chrome/Safari */
+  }
+
+  .custom-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
   /* ====== Animações ====== */
 :root {
   /* valores padrão — podes sobrescrever inline com --duration e --delay */

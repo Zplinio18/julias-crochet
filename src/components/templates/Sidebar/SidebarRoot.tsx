@@ -10,9 +10,20 @@ import { Dialog } from "../Dialog";
 
 interface SidebarProps {
   projects: Project[];
-  onAddProject: (name: string, emoji: string) => string;
+  onAddProject: (
+    name: string,
+    emoji: string,
+    hasTimer: boolean,
+    notes: string,
+  ) => string;
   onDeleteProject: (id: string) => void;
-  onEditProject: (id: string, name: string, emoji: string) => void;
+  onEditProject: (
+    id: string,
+    name: string,
+    emoji: string,
+    hasTimer: boolean,
+    notes: string,
+  ) => void;
 }
 
 export function SidebarRoot({
@@ -32,17 +43,25 @@ export function SidebarRoot({
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleCreateSubmit = (name: string, emoji: string) => {
-    const newProjectId = onAddProject(name, emoji);
-
+  const handleCreateSubmit = (
+    name: string,
+    emoji: string,
+    hasTimer: boolean,
+    notes: string,
+  ) => {
+    const newProjectId = onAddProject(name, emoji, hasTimer, notes);
     setIsSidebarOpen(false);
-
     navigate(`/project/${newProjectId}`);
   };
 
-  const handleEditSubmit = (name: string, emoji: string) => {
+  const handleEditSubmit = (
+    name: string,
+    emoji: string,
+    hasTimer: boolean,
+    notes: string,
+  ) => {
     if (projectToEdit) {
-      onEditProject(projectToEdit.id, name, emoji);
+      onEditProject(projectToEdit.id, name, emoji, hasTimer, notes);
       setProjectToEdit(null);
     }
   };
@@ -174,6 +193,8 @@ export function SidebarRoot({
         onSubmit={handleEditSubmit}
         initialName={projectToEdit?.name || ""}
         initialEmoji={projectToEdit?.emoji || "🧶"}
+        initialHasTimer={projectToEdit?.hasTimer || false}
+        initialNotes={projectToEdit?.notes || ""}
       />
     </>
   );
