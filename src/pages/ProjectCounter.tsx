@@ -320,7 +320,6 @@ export function ProjectCounter({
 }
 
 function CounterCard({
-  title,
   count,
   onIncrement,
   onDecrement,
